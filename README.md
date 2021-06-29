@@ -128,6 +128,12 @@ Optional:
     # Comparison could be one of this: exact, minimum, maximum or better
     ckanext.saml2auth.requested_authn_context_comparison = exact
 
+    # Default fallback endpoint to redirect to if no RelayState provided in the SAML Response
+    # Default: user.me (ie /dashboard)
+    # e.g. to redirect to the home page
+    ckanext.saml2auth.default_fallback_endpoint = home.index
+
+
 ## Plugin interface
 
 This extension provides the [ISaml2Auth]{.title-ref} interface that

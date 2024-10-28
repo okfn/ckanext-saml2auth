@@ -39,7 +39,7 @@ class TestDatasetViews(object):
         """ The the function _get_user_by_email for duplicated emails """
         # Generate a duplciate email
         user2 = model.User.get(tdv_data.user2['id'])
-        user2.email = tdv_data.user1['email']
+        user2.email = tdv_data.user1['email'].upper()
         model.Session.commit()
 
         with pytest.raises(toolkit.ValidationError):

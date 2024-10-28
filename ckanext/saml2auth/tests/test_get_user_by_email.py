@@ -33,14 +33,14 @@ class TestDatasetViews(object):
         """ The the function _get_user_by_email for empty response """
         ret = _get_user_by_email(tdv_data.user1['email'])
         assert ret is not None
-        assert ret.email == tdv_data.user1.email
+        assert ret['email'] == tdv_data.user1['email']
 
     def test_get_user_by_email_multiple(self, tdv_data):
         """ The the function _get_user_by_email for duplicated emails """
         # Generate a duplciate email
-        toolkit.get_action('user_update')(
-            {'ignore_auth': True},
-            {'id': tdv_data.user2['id'], 'email': tdv_data.user1['email']}
-        )
+        user2 = model.User.get(tdv_data.user2['id'])
+        user2.email = tdv_data.user1['email']
+        model.Session.commit()
+
         with pytest.raises(toolkit.ValidationError):
             _get_user_by_email(tdv_data.user1.email)

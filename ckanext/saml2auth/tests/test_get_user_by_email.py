@@ -18,6 +18,7 @@ def tdv_data():
         email='user2@example.com',
         plugin_extras={'saml2auth': {'saml_id': 'saml_id2'}}
     )
+    return obj
 
 
 @pytest.mark.usefixtures(u'clean_db', u'clean_index')

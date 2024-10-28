@@ -43,4 +43,4 @@ class TestDatasetViews(object):
         model.Session.commit()
 
         with pytest.raises(toolkit.ValidationError):
-            _get_user_by_email(tdv_data.user1.email)
+            _get_user_by_email(tdv_data.user1['email'])

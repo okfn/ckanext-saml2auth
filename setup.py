@@ -41,10 +41,10 @@ setup(
     long_description_content_type='text/markdown',
 
     # The project's main homepage.
-    url='https://github.com/keitaroinc/ckanext-saml2auth',
+    url='https://github.com/okfn/ckanext-saml2auth',
 
     # Author details
-    author='''Keitaro Inc''',
+    author='''Keitaro Inc + OKFN''',
     author_email='''info@keitaro.com''',
 
     # Choose your license
@@ -64,9 +64,9 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
 
 

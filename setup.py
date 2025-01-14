@@ -34,7 +34,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.3.1',
+    version='1.3.3',
 
     description='''An extension to enable Single Sign On(SSO) for CKAN data portals via SAML2 Authentication.''',
     long_description=long_description,
@@ -80,8 +80,7 @@ setup(
 
     # pysaml2 7.4 requires python 3.9
     install_requires=[
-        'pysaml2>=6.5.1,<7.4; python_version < "3.9"',
-        'pysaml2>=7.4; python_version >= "3.9"',
+        'pysaml2>=7.4',
     ],
 
     # If there are data files included in your packages that need to be

@@ -120,9 +120,12 @@ class TestGetRequest:
         try:
             response = app.post(url=url, params=data)
         except Exception as e:
+            # decode the response
+            import base64
+            decoded = base64.b64decode(encoded_response)
             raise Exception(
                 f'Error test_unsigned_request: {e}\n'
-                f'encoded_response: {encoded_response}\n'
+                f'encoded_response: {decoded}\n'
                 f'url: {url}\n'
             )
 

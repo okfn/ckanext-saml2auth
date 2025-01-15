@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ckanext-saml2auth"
+version = "1.3.3"
+description = "An extension to enable Single Sign On(SSO) for CKAN data portals via SAML2 Authentication."
+readme = "README.md"
+readme-content-type = "text/markdown"
+license = { text = "AGPL-3.0-or-later" }
+authors = [
+    { name = "Keitaro Inc", email = "info@keitaro.com" },
+    { name = "OKFN", email = "info@okfn.org" }
+]
+homepage = "https://github.com/okfn/ckanext-saml2auth"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+keywords = ["CKAN", "ckanext", "saml2", "sso"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.urls]
+"Homepage" = "https://github.com/okfn/ckanext-saml2auth"
+
+[project.dependencies]
+pysaml2 = [
+    { version = ">=6.5.1,<7.4", python = "<3.9" },
+    { version = ">=7.4,<8", python = ">=3.9" }
+]
+
+[tool.setuptools.packages.find]
+exclude = ["contrib", "docs", "tests*"]
+
+[tool.setuptools]
+namespace-packages = ["ckanext"]
+
+[tool.babel]
+extract_messages = {
+    keywords = ["translate", "isPlural"],
+    add_comments = "TRANSLATORS:",
+    output_file = "ckanext/saml2auth/i18n/ckanext-saml2auth.pot",
+    width = 80
+}
+init_catalog = {
+    domain = "ckanext-saml2auth",
+    input_file = "ckanext/saml2auth/i18n/ckanext-saml2auth.pot",
+    output_dir = "ckanext/saml2auth/i18n"
+}
+update_catalog = {
+    domain = "ckanext-saml2auth",
+    input_file = "ckanext/saml2auth/i18n/ckanext-saml2auth.pot",
+    output_dir = "ckanext/saml2auth/i18n",
+    previous = true
+}
+compile_catalog = {
+    domain = "ckanext-saml2auth",
+    directory = "ckanext/saml2auth/i18n",
+    statistics = true
+}

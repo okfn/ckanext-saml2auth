@@ -89,4 +89,4 @@ jobs:
       - name: Test with pytest
         run: |
           echo "Running SAML2AUTH tests"
-          pytest --ckan-ini=subdir/test.ini --cov=ckanext.saml2auth --disable-warnings ckanext/saml2auth/tests
+          pytest --ckan-ini=test.ini --cov=ckanext.saml2auth --disable-warnings ckanext/saml2auth/tests

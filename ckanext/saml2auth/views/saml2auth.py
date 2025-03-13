@@ -245,9 +245,9 @@ def acs():
     # Required user attributes for user creation
     try:
         email = auth_response.ava[saml_user_email][0]
-    except KeyError:
+    except KeyError as e:
         error = 'User email not found in the SAML response'
-        error_internal = f'{error}: {auth_response.ava}'
+        error_internal = f'{error}: {e}. Data:{auth_response.ava}'
         log.critical(error_internal)
         extra_vars = {u'code': [400], u'content': error}
         return base.render(u'error_document_template.html', extra_vars), 400

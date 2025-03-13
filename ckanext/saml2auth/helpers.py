@@ -127,5 +127,18 @@ def get_saml2auth_login_button_text():
     """
     Returns the configured text for the SAML2 login button.
     Default is 'SSO' if not configured.
+
+    This version only returns the provider name instead of "login with %(provider)s"
+    to avoid duplication in the login template.
     """
-    return toolkit.config.get('ckanext.saml2auth.login_button_text', 'SSO')
+    text = toolkit.config.get('ckanext.saml2auth.login_button_text', 'SSO')
+
+    # Check if the text follows the pattern "login with X"
+    import re
+    match = re.match(r'login\s+with\s+(\w+)', text, re.IGNORECASE)
+
+    if match:
+        # Extract and return only the provider name
+        return match.group(1)
+
+    return text

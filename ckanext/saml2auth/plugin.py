@@ -33,7 +33,6 @@ from ckanext.saml2auth.cache import get_subject_id, get_saml_session_info
 from ckanext.saml2auth.spconfig import get_config as sp_config
 from ckanext.saml2auth import helpers as h
 from saml2.s_utils import UnsupportedBinding
-from ckanext.saml2auth import helpers
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ class Saml2AuthPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {
             'is_default_login_enabled': h.is_default_login_enabled,
-            'get_saml2auth_login_button_text': helpers.get_saml2auth_login_button_text,
+            'get_saml2auth_login_button_text': h.get_saml2auth_login_button_text,
         }
 
     # IConfigurable

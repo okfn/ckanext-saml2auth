@@ -40,7 +40,8 @@ class ExampleISaml2AuthPlugin(plugins.SingletonPlugin):
     def __init__(self, *args, **kwargs):
 
         self.calls = defaultdict(int)
-        super().__init__(*args, **kwargs)
+        self.name = 'ExampleISaml2AuthPlugin'
+        # super().__init__(*args, **kwargs)
 
     def before_saml2_user_update(self, user_dict, saml_attributes):
 
@@ -60,6 +61,13 @@ class ExampleISaml2AuthPlugin(plugins.SingletonPlugin):
         user_dict['plugin_extras']['my_plugin'] = {}
         user_dict['plugin_extras']['my_plugin']['key2'] = 'value2'
 
+    def before_saml2_login(self, email, saml_attributes):
+
+        self.calls['before_saml2_login'] += 1
+
+        # return (True, 403, f'Example error for email {email} and attributes {saml_attributes}')
+        return (False, 200, None)
+
     def after_saml2_login(self, resp, saml_attributes):
 
         self.calls['after_saml2_login'] += 1
@@ -69,8 +77,8 @@ class ExampleISaml2AuthPlugin(plugins.SingletonPlugin):
         return resp
 
 
-@pytest.mark.usefixtures(u'clean_db', u'with_plugins')
 @pytest.mark.ckan_config(u'ckan.plugins', u'saml2auth')
+@pytest.mark.usefixtures(u'clean_db', u'with_plugins')
 @pytest.mark.ckan_config(u'ckanext.saml2auth.entity_id', u'urn:gov:gsa:SAML:2.0.profiles:sp:sso:test:entity')
 @pytest.mark.ckan_config(u'ckanext.saml2auth.idp_metadata.location', u'local')
 @pytest.mark.ckan_config(u'ckanext.saml2auth.idp_metadata.local_path', os.path.join(extras_folder, 'provider0', 'idp.xml'))
@@ -91,10 +99,21 @@ class TestInterface(object):
         with plugins.use_plugin("test_saml2auth") as plugin:
             response = app.post(url=url, params=data, follow_redirects=False)
             assert 302 == response.status_code
-
             assert plugin.calls["after_saml2_login"] == 1, plugin.calls
-
             assert response.headers['X-Custom-header'] == 'test'
+
+    def test_before_login_is_called(self, app):
+        encoded_response = _prepare_unsigned_response()
+        url = '/acs'
+
+        data = {
+            'SAMLResponse': encoded_response
+        }
+
+        with plugins.use_plugin("test_saml2auth") as plugin:
+            response = app.post(url=url, params=data, follow_redirects=False)
+            assert 302 == response.status_code
+            assert plugin.calls["before_saml2_login"] == 1, plugin.calls
 
     def test_before_create_is_called(self, app):
 
@@ -108,7 +127,6 @@ class TestInterface(object):
         with plugins.use_plugin("test_saml2auth") as plugin:
             response = app.post(url=url, params=data, follow_redirects=False)
             assert 302 == response.status_code
-
             assert plugin.calls["before_saml2_user_create"] == 1, plugin.calls
 
         user = model.User.by_email('test@example.com')
@@ -145,7 +163,6 @@ class TestInterface(object):
         with plugins.use_plugin("test_saml2auth") as plugin:
             response = app.post(url=url, params=data, follow_redirects=False)
             assert 302 == response.status_code
-
             assert plugin.calls["before_saml2_user_update"] == 1, plugin.calls
 
         user = model.User.by_email('test@example.com')
@@ -174,7 +191,6 @@ class TestInterface(object):
         with plugins.use_plugin("test_saml2auth") as plugin:
             response = app.post(url=url, params=data, follow_redirects=False)
             assert 302 == response.status_code
-
             assert plugin.calls["before_saml2_user_update"] == 1, plugin.calls
 
         user = model.User.by_email('test@example.com')

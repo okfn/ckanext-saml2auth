@@ -34,18 +34,18 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.3.6',
+    version='1.3.7',
 
     description='''An extension to enable Single Sign On(SSO) for CKAN data portals via SAML2 Authentication.''',
     long_description=long_description,
     long_description_content_type='text/markdown',
 
     # The project's main homepage.
-    url='https://github.com/keitaroinc/ckanext-saml2auth',
+    url='https://github.com/okfn/ckanext-saml2auth',
 
     # Author details
-    author='''Keitaro Inc''',
-    author_email='''info@keitaro.com''',
+    author='''Keitaro Inc + OKFN''',
+    author_email='''info@okfn.org''',
 
     # Choose your license
     license='AGPL',

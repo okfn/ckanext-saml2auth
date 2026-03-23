@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 from jinja2 import Template
 import os
 import pytest
@@ -59,6 +59,7 @@ def _prepare_unsigned_response():
         'destination': 'http://test.ckan.net/acs',
         'recipient': 'http://test.ckan.net/acs',
         'issue_instant': datetime.now().isoformat(),
+        'not_on_or_after': (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
     }
     t = Template(unsigned_response)
     final_response = t.render(**context)

@@ -78,9 +78,12 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     namespace_packages=['ckanext'],
 
-    # pysaml2 7.4 requires python 3.9
+    # See pysaml2 dependency
+    # https://github.com/IdentityPython/pysaml2/pull/1021
+    # https://github.com/IdentityPython/pysaml2/pull/1021#issuecomment-4075874429
     install_requires=[
-        'pysaml2>=7.4',
+        'pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.4-1',
+
     ],
 
     # If there are data files included in your packages that need to be

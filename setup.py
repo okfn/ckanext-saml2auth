@@ -78,12 +78,16 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     namespace_packages=['ckanext'],
 
-    # See pysaml2 dependency
-    # https://github.com/IdentityPython/pysaml2/pull/1021
-    # https://github.com/IdentityPython/pysaml2/pull/1021#issuecomment-4075874429
+    # pysaml2 7.5.x is required (7.4 dropped Python < 3.9 support).
+    # No upper pin on pyOpenSSL / cryptography on purpose: the extension
+    # never generates certificates at runtime, so it is compatible with the
+    # current (security-supported) releases. pysaml2's
+    # saml2.cert.OpenSSLWrapper.create_certificate() does use the
+    # OpenSSL.crypto.X509Req API removed in pyOpenSSL 25.0, but that helper
+    # is only ever exercised by the test suite, which now mints its
+    # throwaway keypair via `cryptography` directly instead.
     install_requires=[
-        'pysaml2 @ git+https://github.com/peppelinux/pysaml2@pplnx-v7.5.4-1',
-
+        'pysaml2>=7.5',
     ],
 
     # If there are data files included in your packages that need to be

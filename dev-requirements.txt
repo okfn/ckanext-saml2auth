@@ -1,3 +1,2 @@
 flake8    # for the CI build
-pysaml2
 packaging>=22.0

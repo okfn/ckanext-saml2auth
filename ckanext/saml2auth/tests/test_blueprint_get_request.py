@@ -227,35 +227,51 @@ class TestGetRequest:
         }
 
     def _generate_cert(self):
-        from saml2.cert import OpenSSLWrapper
+        # Mint a throwaway RSA keypair / self-signed certificate for the SP
+        # using the `cryptography` library directly. We deliberately avoid
+        # pysaml2's saml2.cert.OpenSSLWrapper, which relies on
+        # OpenSSL.crypto.X509Req -- deprecated in pyOpenSSL 24.2.0 and removed
+        # in 26.3.0 (which the fork's pyopenssl>=25.3.0 resolves to). The
+        # extension never generates certificates at runtime, so this keeps
+        # the test compatible with current pyOpenSSL / cryptography releases.
+        import datetime
+        from cryptography import x509
+        from cryptography.x509.oid import NameOID
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
 
-        cert_info_ca = {
-            "cn": "localhost.ca",
-            "country_code": "se",
-            "state": "ac",
-            "city": "umea",
-            "organization": "Test University",
-            "organization_unit": "Deca"
-        }
+        key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
-        osw = OpenSSLWrapper()
-        ca_cert, ca_key = osw.create_certificate(
-            cert_info_ca,
-            request=False,
-            write_to_file=False
+        name = x509.Name([
+            x509.NameAttribute(NameOID.COUNTRY_NAME, u"SE"),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, u"ac"),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, u"umea"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, u"Test University"),
+            x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, u"Deca"),
+            x509.NameAttribute(NameOID.COMMON_NAME, u"localhost"),
+        ])
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        cert = (
+            x509.CertificateBuilder()
+            .subject_name(name)
+            .issuer_name(name)
+            .public_key(key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(now - datetime.timedelta(days=1))
+            .not_valid_after(now + datetime.timedelta(days=3650))
+            .sign(key, hashes.SHA256())
         )
 
-        cert_str, key_str = osw.create_certificate(cert_info_ca, request=True)
-        re_cert_str = osw.create_cert_signed_certificate(
-            ca_cert,
-            ca_key,
-            cert_str,
-            valid_from=0,
-            valid_to=1
+        key_str = key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption(),
         )
+        cert_str = cert.public_bytes(serialization.Encoding.PEM).decode('ascii')
 
         f = open(os.path.join(extras_folder, 'provider1', 'mycert.pem'), 'w')
-        f.write(re_cert_str)
+        f.write(cert_str)
         f.close()
 
         f = open(os.path.join(extras_folder, 'provider1', 'mykey.pem'), 'wb')
@@ -263,7 +279,7 @@ class TestGetRequest:
         f.close()
 
         self.key_str = key_str
-        self.cert_str = re_cert_str
+        self.cert_str = cert_str
 
     @pytest.mark.ckan_config(u'ckanext.saml2auth.entity_id', u'urn:gov:gsa:SAML:2.0.profiles:sp:sso:test:entity')
     @pytest.mark.ckan_config(u'ckanext.saml2auth.idp_metadata.location', u'local')

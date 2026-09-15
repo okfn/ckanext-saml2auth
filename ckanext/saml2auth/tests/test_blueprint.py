@@ -20,7 +20,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 import pytest
 
-from ckan.plugins import toolkit
 from ckan.plugins.toolkit import url_for
 
 here = os.path.dirname(os.path.abspath(__file__))

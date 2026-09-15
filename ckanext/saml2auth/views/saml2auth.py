@@ -29,7 +29,6 @@ import ckan.model as model
 import ckan.plugins as plugins
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib import base, signals
-from ckan.views.user import set_repoze_user
 from ckan.common import config, g, request
 
 from ckanext.saml2auth.spconfig import get_config as sp_config
@@ -40,6 +39,7 @@ from ckanext.saml2auth.cache import set_subject_id, set_saml_session_info
 
 log = logging.getLogger(__name__)
 saml2auth = Blueprint(u'saml2auth', __name__)
+set_repoze_user = None
 
 
 def _get_requested_authn_contexts():
@@ -298,27 +298,12 @@ def acs():
 
 
 def _log_user_into_ckan(resp):
-    """ Log the user into different CKAN versions.
+    """ Log the user """
 
-    CKAN 2.10 introduces flask-login and login_user method.
-
-    CKAN 2.9.6 added a security change and identifies the user
-    with the internal id plus a serial autoincrement (currently static).
-
-    CKAN <= 2.9.5 identifies the user only using the internal id.
-    """
-    if toolkit.check_ckan_version(min_version="2.10"):
-        from ckan.common import login_user
-        login_user(g.userobj)
-        return
-
-    if toolkit.check_ckan_version(min_version="2.9.6"):
-        user_id = "{},1".format(g.userobj.id)
-    else:
-        user_id = g.userobj.name
-    set_repoze_user(user_id, resp)
-
+    from ckan.common import login_user
     log.info(u'User {0}<{1}> logged in successfully'.format(g.userobj.name, g.userobj.email))
+    login_user(g.userobj)
+    return
 
 
 def saml2login():

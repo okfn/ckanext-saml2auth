@@ -22,13 +22,8 @@ from datetime import datetime, timedelta
 from jinja2 import Template
 import os
 import pytest
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 from ckan import model
-from ckan.plugins import toolkit
 
 from saml2.xmldsig import SIG_RSA_SHA256
 from saml2.xmldsig import DIGEST_SHA256

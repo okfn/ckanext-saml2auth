@@ -29,7 +29,6 @@ import ckan.model as model
 import ckan.plugins as plugins
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib import base, signals
-set_repoze_user = None
 from ckan.common import config, g, request
 
 from ckanext.saml2auth.spconfig import get_config as sp_config
@@ -40,6 +39,7 @@ from ckanext.saml2auth.cache import set_subject_id, set_saml_session_info
 
 log = logging.getLogger(__name__)
 saml2auth = Blueprint(u'saml2auth', __name__)
+set_repoze_user = None
 
 
 def _get_requested_authn_contexts():
